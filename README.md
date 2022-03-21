@@ -35,6 +35,8 @@ Role of an SRE
 - Availability zones
   - the number of servers within that area of the globe (Region)
 ## CDN Definition
+- content delivery network
+- a geographically distributed network of servers which work together to provide content to users
 ## On prem VS Hybrid VS Public Cloud
 - On prem
   - storing all the data of the organisation on the premises of the organisation, in other words running an internal server maintained by the organisation itself
