@@ -15,7 +15,7 @@ Role of an SRE
 - 26 different regions
 - 84 availability zones
 - plans for future expansion
-## Benefits of Cloud Computing
+## Benefits of Cloud Computing (Known as 4 pillars of Cloud Computing as well)
 - Ease of use
   - data is stored online, meaning every team member views the same data and any updates are immediately available for the team to view
   - makes quality control easier as all data is stored in the same place, i.e. nothing is ever lost
