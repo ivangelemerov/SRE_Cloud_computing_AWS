@@ -5,7 +5,7 @@ Role of an SRE
 - the path a user would take in order to complete a task, e.g. log into their account to upload a picture that others can see
 # User Experience
 - the level of satisfaction a user feels after performing a User Journey, for  example a bad exprerience would come as a result of failing to upload a new picture and getting an error code, whereas a good experience can come from successfully uploading the desired picture
-# Cloud computing with AWS
+# Cloud computing with AWS (Amazon Web Services)
 ## AWS Definition
 - A cloud platform providing organisations with the required server space to store their information on the cloud and make it easily available to its users without the need for the organisation to invest money into the infrastructure
 ## Global Infrastructure
