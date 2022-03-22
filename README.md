@@ -53,7 +53,7 @@ Role of an SRE
 - check diagram for more:
 
 ![Getting Started](day2diagram.png)
-### how to launch an instance
+### How to launch an instance
 - add file.pem into the .ssh folder (c/users/ivan/.ssh) if it doesn't exist make one
 - go to AWS website using the secret link, login using secret details
 - leave most things default
