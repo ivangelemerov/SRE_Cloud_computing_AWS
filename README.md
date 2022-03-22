@@ -46,3 +46,10 @@ Role of an SRE
 - Hybryd
   - storing some of the information within the internal organisation server, and some on a public server like AWS
   - For example, a bank might keep your card information within the banks internal server, but keep a credit application form on a public server
+# AWS -> localhost and back
+- Our desktop or laptop has set hardware and software on it
+- AWS doesn't, so we need to specify the size we want it to have
+- need credentials (username, password, AWS keys) to have access
+- check diagram for more:
+
+![Getting Started](day2diagram.png)
