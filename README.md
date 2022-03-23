@@ -100,3 +100,28 @@ Role of an SRE
 ![Getting Started](chmod.png)
 - write `w` read `r` executable (.exe) `x`
   - for more info, check https://chmod-calculator.com
+## Bash Scripting
+```bash
+# Create a file called provision.sh
+
+# It must start with #!/bin/bash
+#!/bin/bash
+
+# Run uppdates
+sudo apt-get update -y
+
+# Run upgrades
+sudo apt-get upgrade -y
+
+# Install nginx
+sudo apt-get install nginx -y
+
+# Ensure it's running - start nginx
+sudo systemctl start nginx
+
+# Enable nginx
+sudo systemctl enable nginx
+```
+- change the file to a .exe file
+  - using `chmod +x name_file`
+- how to run a .exe file `./name_file`
