@@ -51,7 +51,7 @@ Role of an SRE
 - AWS doesn't, so we need to specify the size we want it to have
 - need credentials (username, password, AWS keys) to have access
 - check diagram for more:
-![Getting Started](day2diagram.png)
+![Getting Started](images/day2diagram.png)
 ## How to launch an instance
 - add file.pem into the .ssh folder `c/users/ivan/.ssh` if it doesn't exist make one
 - go to AWS website using the secret link, login using secret details
@@ -87,7 +87,7 @@ Role of an SRE
 - how to check content of file without going inside the file `car name_file`
 - how to move a file copy file.txt from current location into a folder `mv name_file path_location`
   - very important to put the correct path location, otherwise things might disappear... for example:
-![Getting Started](day3linuxfails.png)
+![Getting Started](images/day3linuxfails.png)
 - how to copy a file file.txt from current location into a folder `cp name_file path_location`
   - differences between move and copy
     - `move` will change the file path, `copy` will create an identical file in the given location
@@ -97,10 +97,11 @@ Role of an SRE
 ## File Permissions
 - how to check file permissions `ll`
 - change file permissions `chmod required_pormission name_file`
-![Getting Started](chmod.png)
+![Getting Started](images/chmod.png)
 - write `w` read `r` executable (.exe) `x`
   - for more info, check https://chmod-calculator.com
 ## Bash Scripting
+### nginx
 ```bash
 # Create a file called provision.sh
 
@@ -121,7 +122,71 @@ sudo systemctl start nginx
 
 # Enable nginx
 sudo systemctl enable nginx
+
+# Check the status
+systemctl status nginx
 ```
-- change the file to a .exe file
-  - using `chmod +x name_file`
-- how to run a .exe file `./name_file`
+### tomcat9
+```bash
+# Create a file called tomcat.sh
+
+# It must start with #!/bin/bash
+#!/bin/bash
+
+# Run uppdates
+sudo apt-get update -y
+
+# Run upgrades
+sudo apt-get upgrade -y
+
+# Install tomcat9
+sudo apt-get install tomcat9 -y
+
+# Ensure it's running - start tomcat9
+sudo systemctl start tomcat9
+
+# Enable tomcat9
+sudo systemctl enable tomcat9
+
+# Check the status
+systemctl status tomcat9
+```
+- after running the script
+  - change the file to a .exe file
+    - using `chmod +x name_file`
+  - run the .exe file `./name_file`
+# Further reading
+- what is `VPC`
+  - Virtual Private Cloud
+  - A virtual private cloud (VPC) is a secure, isolated private cloud hosted within a public cloud.
+  - example, imagine a restourant with a reserved table, i.e. only the people who reserved it can get on it
+- What is `Internet gateway`
+  - An internet gateway is a VPC component that allows communication between networks
+  - something that is connected to the VPC to let it communicate with the internet
+- what is `Route tables`
+  - A route table contains a set of Destination-Target pairs, called routes, that determine where data can go
+- what is `Subnet`
+  - A subnet is a range of IP addresses defined for a network
+- what is `NACLs`
+  - A network access control list (ACL) is an optional layer of security for your VPC that acts as a firewall for controlling traffic in and out of one or more subnets. You might set up network ACLs with rules similar to your security groups in order to add an additional layer of security to your VPC
+- what is `Security group`
+  - A security group acts as a virtual firewall, controlling the traffic that is allowed to reach and leave the resources that it is associated with. For example, after you associate a security group with an EC2 instance, it controls the inbound and outbound traffic for the instance.
+- How did you secure your app on the public cloud?
+  - with the use of a security group, ensuring the ssh connection we made was only to our own IP at port 22
+- What are the outbound rules for security groups by default? Why?
+![Getting Started](images/defaultSG.png)
+  - because this way inwards access is only given to VPCs with the same SG meaning they are within the VPC
+  - and outward read-only trafic is allowed for everyone
+- Command to kill a process in Linux
+  - https://www.geeksforgeeks.org/kill-command-in-linux-with-examples/
+# Architectures
+## Monolith
+## N-tier and 2-tier
+## Microservices
+## Scaling out VS Scaling up
+### Scaling out
+- increasing the number of servers
+- usually happens when they number of users increase
+### Scaling up
+- increasing the data load the server can take
+- usually happens when the size of the data increases
