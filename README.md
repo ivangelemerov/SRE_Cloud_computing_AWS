@@ -181,12 +181,81 @@ systemctl status tomcat9
   - https://www.geeksforgeeks.org/kill-command-in-linux-with-examples/
 # Architectures
 ## Monolith
-## N-tier and 2-tier
+- composed all in one piece - single-tiered
+- in other words, it can have multiple components but it is deployed as `ONE APPLICATION`
+- Benefits
+  - simple to develop
+  - simple to test
+  - simple to deploy
+  - cheaper to maintain
+- Drawbacks
+  - if it is too large it is hard to understand therefore hard to maintain
+  - size of application can slow down start0up times
+  - have to redeploy after every update
+  - poor reliability - a single bug can take down the entire app
+  - hard to scale up
+- best suited for applications that do not have a future that involves scaling up
+  - e.g. a school system (number of students is relatively similar every year, new ones come in but old ones go out)
 ## Microservices
+- multiple services, each of which is self contained and responsible for one job
+  - therefore can be deployed independantly
+- need a small team to maintain
+- each service operates on their own and is not dependant on the rest
+- Benefits
+  - easier to spot and fix bugs, also won't make the whole app crash
+  - small teams needed to maintain which promotes agility
+  - small code base therefore easier to maintain
+  - easier scaling as services can be scaled individually without the need to touch the rest of the app
+- Drawbacks
+  - a lot more complex than Monolithic
+    - more parts
+  - harder deployment and testing as the dependencies between services are harder to test for
+  - the freedom to use different languages can cause a lot of headaches when it comes to maintanance
+  - the API designs need to be very good as to not cause additional latency
+  - requires a team with a much higher skill set 
+![Getting Started](images/monolitic-vs-microservices.png)
+## N-tier
+- divides an application into logical layers and physical tiers
+  - layers are a way to seperate responsibilities, where each layer has a specific responsibility
+  - higher layers can call lower layers but not the other way around
+  - could have several layers on the same tier
+  - tiers can communicate with all other tiers
+- Benefits
+  - portable between cloud and on-prem, and between cloud platforms
+  - less of a learning curve for developers
+  - evolution of the traditional model
+- Drawbacks
+  - monolitic design so cannot deploy single services
+  - difficult to manage network security
+  - it's easy to end up with a tier that does CRUD operations adding extra latency
+![Getting Started](images/n-tier-physical-bastion.png)
 ## Scaling out VS Scaling up
 ### Scaling out
 - increasing the number of servers
-- usually happens when they number of users increase
+- usually happens when the number of users increases
 ### Scaling up
 - increasing the data load the server can take
 - usually happens when the size of the data increases
+# SDLC – software development life cycle
+- It’s the process of end to end product development.
+- Products need to follow a certain life cycle.
+- The Stages are:
+  - Planning
+    - Just an idea, only in someone’s head
+  - Designing
+    - Writing out how the product will look and what it needs.
+  - Development
+    - Develop an environment that works for all of us. i.e the linux instance we created
+    - Implementing the design.
+  - Testing
+    - Nothing goes to production without testing.
+    - The test must pass in order to go to the next stage.
+    - Beta versions can happen after testing to get feedback from the user.
+  - Staging
+    - It’s the holding area before the code gets deployed. The program is packaged and ready, just on hold till the release date. After staging the code is deployed.
+# Github
+- One person reviewing is always the best.
+- Someone who is more knowledgeable should merge.
+- `git` will tell you all the commands that can be performed on git
+- If you delete the .git file you need to reconnect to the github remote before pushing the code back to github
+  - in other words it makes the folder not be a repo anymore
