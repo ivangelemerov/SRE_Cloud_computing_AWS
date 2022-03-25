@@ -259,3 +259,15 @@ systemctl status tomcat9
 - `git` will tell you all the commands that can be performed on git
 - If you delete the .git file you need to reconnect to the github remote before pushing the code back to github
   - in other words it makes the folder not be a repo anymore
+# S3 - Simple Storage Service
+- Globally available - have access regardless of the region you use
+- Tends to be used a lot by orgs when they save past employee records
+- Commands for s3 follow a certain pattern of writing
+![Getting Started](images/aws_s3_command.png)
+- AWS S3 also has a naming convention
+  - `-` instead of `_`
+  - cannot use upper case letters  
+![Getting Started](images/aws_s3_naming_convention.png)
+- Remove bucket
+  - first of all, all the files need to be removed from the bucket, otherwise it will fail
+![Getting Started](images/remove_bucket.png)
