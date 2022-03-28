@@ -262,6 +262,7 @@ systemctl status tomcat9
 # S3 - Simple Storage Service
 - Globally available - have access regardless of the region you use
 - Tends to be used a lot by orgs when they save past employee records
+![Getting Started](images/S3overview.png)
 - Commands for s3 follow a certain pattern of writing
 ![Getting Started](images/aws_s3_command.png)
 - AWS S3 also has a naming convention
@@ -271,3 +272,23 @@ systemctl status tomcat9
 - Remove bucket
   - first of all, all the files need to be removed from the bucket, otherwise it will fail
 ![Getting Started](images/remove_bucket.png)
+# Docker
+## Virtualisation VS Containerisation
+- virtualisation takes a large slice to run
+- containerisation (docker) shares the resources
+## Setup
+- Install docker from official website
+- make sure WSL2 is selected when installing
+- then follow this to enable Hyper-V
+  - https://www.asus.com/support/FAQ/1038245/
+  - `NOTE: this only works for my motherboard, will have to check the exact steps for specific motherboards`
+- then starting docker will give a prompt to update linux kernel (might be called something else I forgot)
+  - follow the link, complete step 4, which is the one to install the file needed for update
+- after that, docker should run fine
+## Docker commands
+### Images
+![Getting Started](images/docker_images.png)
+### Remove container
+![Getting Started](images/docker_remove.png)
+### Start/Stop container
+![Getting Started](images/docker_start_stop.png)
