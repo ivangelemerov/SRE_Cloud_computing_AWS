@@ -273,6 +273,9 @@ systemctl status tomcat9
   - first of all, all the files need to be removed from the bucket, otherwise it will fail
 ![Getting Started](images/remove_bucket.png)
 # Docker
+- Everything on Docker Hub is an image that you can download, versions and all
+- once you download the version of the image and make it a container, you can do whatever you want with it
+- `BUT` the original image will not change
 ## Virtualisation VS Containerisation
 - virtualisation takes a large slice to run
 - containerisation (docker) shares the resources
@@ -281,7 +284,7 @@ systemctl status tomcat9
 - make sure WSL2 is selected when installing
 - then follow this to enable Hyper-V
   - https://www.asus.com/support/FAQ/1038245/
-  - `NOTE: this only works for my motherboard, will have to check the exact steps for specific motherboards`
+  - `NOTE: this only works for my motherboard, will have to check the exact steps for other motherboards`
 - then starting docker will give a prompt to update linux kernel (might be called something else I forgot)
   - follow the link, complete step 4, which is the one to install the file needed for update
 - after that, docker should run fine
@@ -292,3 +295,27 @@ systemctl status tomcat9
 ![Getting Started](images/docker_remove.png)
 ### Start/Stop container
 ![Getting Started](images/docker_start_stop.png)
+## Uploading to Docker
+### First, log in
+- if you are logged into local docker, it should authorize automatically
+- if not just put credentials in  
+![Getting Started](images/docker_login.png)
+### Then, commit the changes
+- command is `docker commit CONTAINER_ID USERNAME/REPO_NAME:TAG`
+- very important to have the username in there, it is what tells docker where to put the commit
+![Getting Started](images/docker_commit.png)
+### Then, push to Docker Hub
+- just run `docker push CONTAINER_ID USERNAME/REPO_NAME:TAG`
+- i.e. replace commit with push
+- notice, for pushing mentioning the tag also puts that tag on there for people when pulling
+![Getting Started](images/docker_push.png)
+### Pulling and running instance
+- run the following command `docker run -d -p 70:80 ivangelemerov/105_sre_docker_practice:v1`
+  - more generic: `docker run -d -p PORT_LOCAL:PORT_APP CONTAINER_ID USERNAME/REPO_NAME:TAG`
+![Getting Started](images/docker_pull.png)
+- NOTICE:
+  - this comes from an nginx image, therefore runs on port 80
+  - it was committed with the tag v1, therefore tag has to be included when pulling
+    - if it isn't it will look for `latest` version of ivangelemerov/105_sre_docker_practice
+    - which in this case, doesn't exist
+![Getting Started](images/docker_version_difference.png)
