@@ -275,10 +275,12 @@ systemctl status tomcat9
 # Docker
 - Everything on Docker Hub is an image that you can download, versions and all
 - once you download the version of the image and make it a container, you can do whatever you want with it
-- `BUT` the original image will not change
+- `BUT` the original image will not change  
+![Getting Started](images/docker_diagram.png)
 ## Virtualisation VS Containerisation
 - virtualisation takes a large slice to run
 - containerisation (docker) shares the resources
+- (add more about this, maybe examples)
 ## Setup
 - Install docker from official website
 - make sure WSL2 is selected when installing
