@@ -291,7 +291,7 @@ systemctl status tomcat9
   - follow the link, complete step 4, which is the one to install the file needed for update
 - after that, docker should run fine
 ## Docker commands
-### Images
+### Docker images and containers
 ![Getting Started](images/docker_images.png)
 ### Remove container
 ![Getting Started](images/docker_remove.png)
@@ -309,7 +309,8 @@ systemctl status tomcat9
 ### Then, push to Docker Hub
 - just run `docker push CONTAINER_ID USERNAME/REPO_NAME:TAG`
 - i.e. replace commit with push
-- notice, for pushing mentioning the tag also puts that tag on there for people when pulling
+- NOTICE: for pushing mentioning the tag also puts that tag on there for people when pulling
+- NOTE: if the repo doesn't exist within Docker Hub, Docker will create it and add the image you want to push
 ![Getting Started](images/docker_push.png)
 ### Pulling and running instance
 - run the following command `docker run -d -p 70:80 ivangelemerov/105_sre_docker_practice:v1`
@@ -321,3 +322,49 @@ systemctl status tomcat9
     - if it isn't it will look for `latest` version of ivangelemerov/105_sre_docker_practice
     - which in this case, doesn't exist
 ![Getting Started](images/docker_version_difference.png)
+## Docker file to automate building of customised image
+- Building a microservice
+### Other containerisation platforms
+- Crio
+- Rocket
+- Docker is most popular
+### Automate nginx image example from above
+- Create a `Dockerfile`
+  - spelled like this, capital D and all
+  - in same location as index.html for ease of use
+- Decide which base image to use for your image
+  - we started with nginx as base image
+  - if we wanna make new changes in our v1 of our image, we need to load the image and then change that, save it as v2
+#### Building it using script
+- this will let us build the image locally, not on Docker Hub just yet
+- docker just checks if the command can run, doesn't check if, for example, the .html file is empty
+- if some command cannot execute, then Docker will stop execution
+  - might create an image still, but it won't be functional
+![Getting Started](images/docker_build_script.png)
+### Test the image locally to ensure it works
+- Confirm the image is there by showing all images
+![Getting Started](images/docker_image_confirm.png)
+- then try running the image we created
+  - if you want to see the logs, run same command without `-d`
+  - `dopcker run -p PORT_LOCAL:PORT_REQUIRED IMAGE_NAME`
+![Getting Started](images/docker_run_image.png)
+- if it has worked correctly, refreshing the page will be reflected in the logs
+  - remember to run without `-d` to see the logs
+![Getting Started](images/docker_checkupload_1.png)
+![Getting Started](images/docker_checkupload_2.png)
+### Uploading local api to Docker
+- in short, follow this tutorial
+  - https://www.youtube.com/watch?v=f0lMGPB10bM
+- if it doesn't work, follow the below
+#### First, name a Dockerfile
+- go into the repo for the project and make a Docker file there
+![Getting Started](images/docker_file_for_api_upload.png)
+#### Next, make a .dockerignore file
+![Getting Started](images/docker_dockerignore.png)
+#### Then, build the api
+- follow instructions above for building [go to section](#building-it-using-script)
+- then check if the image was built [go to section](#docker-images-and-containers)
+- then run the image [go to section](#pulling-and-running-instance)
+- check to make sure it works [go to section](#docker-images-and-containers)
+#### Funally, upload to Docker Hub
+- follow instructions above [go to section](#then-push-to-docker-hub)
