@@ -212,7 +212,11 @@ systemctl status tomcat9
   - harder deployment and testing as the dependencies between services are harder to test for
   - the freedom to use different languages can cause a lot of headaches when it comes to maintanance
   - the API designs need to be very good as to not cause additional latency
-  - requires a team with a much higher skill set 
+  - requires a team with a much higher skill set
+### Best practice to adapt microservices
+- start with 1-2 services, small teams, test, then move on
+- use [Docker](#docker) to containerise your apps
+- use [K8](#kubernetes-k8) to orchistrate and make your life easy
 ![Getting Started](images/monolitic-vs-microservices.png)
 ## N-tier
 - divides an application into logical layers and physical tiers
@@ -368,3 +372,134 @@ systemctl status tomcat9
 - check to make sure it works [go to section](#docker-images-and-containers)
 #### Funally, upload to Docker Hub
 - follow instructions above [go to section](#then-push-to-docker-hub)
+# Kubernetes (k8)
+- container orchestration platform
+- build by Google, used for over 15 years
+- made open source in 2014
+- used by over 2/3 of orgs (according to 2017 report)
+## Benefits
+- self healing
+  - `NO` single point of failure
+  - what happens if something breaks
+    - just stop it
+    - balance the load for a little while
+      - i.e. share the load between the remaining pods
+    - fix the problem (self heal)
+    - set it up again, so it works like it did before breaking
+![Getting Started](images/k8_heal.png)
+- load balancing
+  - can change way of managing based on the load on the system
+  - i.e. if the load increases, it will share it between the pods
+  - similarly, if it doesn't need all the extra pods, it will remove them
+## Kubernetes deployment
+- deploy replicas of the same image, so that it can balance the load
+![Getting Started](images/k8_deployment.png)
+## Kubernetes commands
+- `kubectl` in kubernetes is the equivalent to `docker` for Docker
+  - meaning all K8 commands start off with `kubectl`
+![Getting Started](images/k8_commands.png)
+- in general, you can use `kubectl COMMAND_NAME --help` to get more info about the command
+  - for example, running `kubectl get --help`
+![Getting Started](images/k8_get.png)
+### For example, check services
+![Getting Started](images/k8_services.png)
+- services: deployment, service, pods, replicasets, crobjob, autoscalinggroup, horizontal pod scaling group (HPA)
+  - kubectl get service_name/deployment/pod
+  - kubectl get deploy nginx_deploy (nginx_svc)
+  - kubectl get pods
+  - kubectl describe pod pod_name
+## YAML
+- easy to read
+- easy to understand
+- hard to type, because of indentation
+  - you need to have every indent be 2 spaces
+  - in VSCode, `TAB` automatically does 2 spaces over usual 4
+### File types
+- file.yml and file.yaml, both fine
+- How to declare it, use `---`
+---
+### Use cases
+- can be utalised with K8, Docker-compose, Ansible, Cloud-formation
+- to codify anything and everything in order to automate processess
+## Plan for creating nginx example
+- Structure
+![Getting Started](images/k8_example.png)
+- create a folder for the project, say nginx_deploy
+- create a file for nginx_deployment.yml
+- create a file for nginx_svc.yml
+- localhost:port
+## Creating
+- after making the YML file, we run the following
+  - `kubectl create -f FILE_NAME.yml`
+- if it worked, we should get a created message
+  - if we want to make sure, we run `kubectl get pods`
+  - it should have the specified number of pods (in this case 3)
+![Getting Started](images/k8_create.png)
+## Delete pod
+![Getting Started](images/k8_delete_pod.png)
+## Change number of pods
+![Getting Started](images/k8_change_pods.png)
+## Example of deploying a local API
+### First, create the .yml files for the API you want to upload
+- `NOTE:` could make a folder to put the file into as well
+- the commands below need to be ran inside the folder the files are in
+- deployment file:
+```YML
+# YML is case sensitive - indentation of YML is important
+# i.e use spaces over TAB
+apiVersion: apps/v1 # which api to use for deployment
+# this is decided by the people who made it, look at documentation to know what to put there
+kind: Deployment # what kind of service you want to create
+# what would you like to call it
+metadata:
+  name: <DEPLOYMENT_NAME> # naming the deployment
+spec:
+  selector:
+    matchLabels:
+      app: <LABEL> # look for this label to match with K8 service
+  
+  # Let's create a replice set of this with 3 instances/pods
+  replicas: POD_NUMBER
+  # template to use it's label for K8 service to launch in the browser
+  template:
+    metadata:
+      labels:
+        app: <LABEL> # This label connects to the service or any other K8 components
+    # Let's define the container spec
+    spec:
+      containers:
+      - name: <LABEL>
+        image: <DOCKERHUB_LINK>
+        ports:
+        - containerPort: 80
+```
+- service file:
+``` YML
+# Select the type of API version and type of service
+apiVersion: v1
+kind: Service
+# Metadata for name
+metadata:
+  name: <SERVICE_NAME>
+  namespace: default
+# Specification to include ports Selector to connect to the deploy
+spec:
+  ports:
+  - nodePort: 31000 # ranges from 30000-32768 
+    port: <PORT_LOCAL>
+    protocol: TCP
+    targetPort: <PORT>
+# Let's define the selector and label to connect to nginx-deployment
+  selector:
+    app: <LABEL> # this label connects this service to deployment
+# Creating LoadBalancer type of deployment
+  type: LoadBalancer
+```
+### Then, follow the list of commands below
+```bash
+kubectl get deploy # this will show you all the deployments you have made, it could be empty if you've never done this before
+kubectl create -f DEPLOYMENT_FILE.yml # this will deploy the project, you can run get deploy to check this worked
+kubectl create -f SERVICE_FILE.yml # this will deploy the service
+kubectl get svc # this will show you all the running services, it will put the service name there
+```
+![Getting Started](IMAGES/k8_api_upload.png)
