@@ -502,4 +502,4 @@ kubectl create -f DEPLOYMENT_FILE.yml # this will deploy the project, you can ru
 kubectl create -f SERVICE_FILE.yml # this will deploy the service
 kubectl get svc # this will show you all the running services, it will put the service name there
 ```
-![Getting Started](IMAGES/k8_api_upload.png)
+![Getting Started](images/k8_api_upload.png)
