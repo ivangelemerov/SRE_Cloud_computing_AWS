@@ -73,7 +73,7 @@ Role of an SRE
 - how to start a service `sudo systemctl start name_service`
 - how to stop a service `sudo systemctl stop name_service`
 - sudo used for admin previleges, if you can't use a particular command because sudo is required you will get something like "permission denied"
-- how to check the status `systemctl status name_service` 
+- how to check the status `systemctl status name_service`
   - the type of service, for example nginx, NOT the name of the instance
   - the AWS instance is a PC in a way, this command checks the service running on that PC
 - how to enable service `sudo systemctl enable name_service`
@@ -99,7 +99,7 @@ Role of an SRE
 - change file permissions `chmod required_pormission name_file`
 ![Getting Started](images/chmod.png)
 - write `w` read `r` executable (.exe) `x`
-  - for more info, check https://chmod-calculator.com
+  - for more info, check <https://chmod-calculator.com>
 ## Bash Scripting
 ### nginx
 ```bash
@@ -178,7 +178,7 @@ systemctl status tomcat9
   - because this way inwards access is only given to VPCs with the same SG meaning they are within the VPC
   - and outward read-only trafic is allowed for everyone
 - Command to kill a process in Linux
-  - https://www.geeksforgeeks.org/kill-command-in-linux-with-examples/
+  - <https://www.geeksforgeeks.org/kill-command-in-linux-with-examples/>
 # Architectures
 ## Monolith
 - composed all in one piece - single-tiered
@@ -235,7 +235,7 @@ systemctl status tomcat9
 ![Getting Started](images/n-tier-physical-bastion.png)
 ## Scaling out VS Scaling up
 ### Scaling out
-- increasing the number of servers
+-  increasing the number of servers
 - usually happens when the number of users increases
 ### Scaling up
 - increasing the data load the server can take
@@ -289,7 +289,7 @@ systemctl status tomcat9
 - Install docker from official website
 - make sure WSL2 is selected when installing
 - then follow this to enable Hyper-V
-  - https://www.asus.com/support/FAQ/1038245/
+  - <https://www.asus.com/support/FAQ/1038245/>
   - `NOTE: this only works for my motherboard, will have to check the exact steps for other motherboards`
 - then starting docker will give a prompt to update linux kernel (might be called something else I forgot)
   - follow the link, complete step 4, which is the one to install the file needed for update
@@ -358,7 +358,7 @@ systemctl status tomcat9
 ![Getting Started](images/docker_checkupload_2.png)
 ### Uploading local api to Docker
 - in short, follow this tutorial
-  - https://www.youtube.com/watch?v=f0lMGPB10bM
+  - <https://www.youtube.com/watch?v=f0lMGPB10bM>
 - if it doesn't work, follow the below
 #### First, name a Dockerfile
 - go into the repo for the project and make a Docker file there
@@ -414,10 +414,10 @@ systemctl status tomcat9
 - hard to type, because of indentation
   - you need to have every indent be 2 spaces
   - in VSCode, `TAB` automatically does 2 spaces over usual 4
+- could add multiple yml files together, but the `order` mathers
 ### File types
 - file.yml and file.yaml, both fine
 - How to declare it, use `---`
----
 ### Use cases
 - can be utalised with K8, Docker-compose, Ansible, Cloud-formation
 - to codify anything and everything in order to automate processess
@@ -502,4 +502,134 @@ kubectl create -f DEPLOYMENT_FILE.yml # this will deploy the project, you can ru
 kubectl create -f SERVICE_FILE.yml # this will deploy the service
 kubectl get svc # this will show you all the running services, it will put the service name there
 ```
-![Getting Started](images/k8_api_upload.png)
+![](images/k8_api_upload.png)
+# Deploying other peoples' code
+
+- need to ask for the requirements of the code they want to deploy
+  - first off, requirements for the EC2, i.e. storage, CPUs, RAM, all of it
+  - then, in the security group (SG), what ports to allow for the app to run
+  - then, software the app needs to run, K8/Docker + whatever their code needs
+    - `NOTE:` K8 uses up 1 CPU, so make sure minimum EC2 requirements match this as well
+## Requirements for running K8 on Linux
+- minimum requirements for ec2
+  - "hardware", i.e. storage space, ram etc
+- OS
+  - in our case `Linux ubuntu 18.04`
+- dependencies
+  - software that is needed, in our case `Docker Desktop` and `K8` on `Linux`
+  - here, K8 cannot be installed as `Docker Desktop` cannot be installed
+  - therefore find replacement, aka `minikube`
+## Create service on EC2
+- follow this guide <https://aws.plainenglish.io/running-kubernetes-using-minikube-cluster-on-the-aws-cloud-4259df916a07>
+### First, create an EC2 instance that can handle the K8 and API
+- Ubuntu Server 18.04
+- t2.medium
+- 8gb storage
+- script for ec2 launch:
+```bash
+#!/bin/bash
+sudo apt update -y
+sudo apt upgrade -y
+```
+- Security Group:
+  - TCP 30000-32768 (range for the NodePorts for K8 deployment)
+  - MSSQL at port 1433
+  - HTTP
+  - SSH at port 22
+### Next, intall Docker, kubectl and minikube on the EC2
+- `NOTE:` make sure you have run update and upgrade before this
+```bash
+# install docker
+sudo apt install docker.io -y
+
+# check docker
+sudo docker --version
+# this is just to check it's running, it is not needed to make the code work
+sudo docker run hello-world
+
+# install kubectl
+curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl
+
+chmod +x ./kubectl
+
+sudo mv ./kubectl /usr/local/bin/kubectl 
+
+# install minikube
+curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+
+chmod +x minikube 
+
+sudo mv minikube /usr/local/bin
+
+# check version
+minikube version
+
+# install conntrack
+sudo apt install conntrack
+
+# start minikube
+sudo minikube start --driver=none
+```
+- if all has been done correctly, you should see the following when running `sudo docker ps`
+![](images/k8_example_installed.png)
+![](images/k8_example_commands.png)
+## Example: Link EC2 API with a DB on another EC2 instance
+- Follow the guide provided on [AWS](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_VPC.Scenarios.html) under section *"A DB instance in a VPC accessed by an EC2 instance in the same VPC"*
+### Overall plan
+- Using a Docker image, create the Northwind database on an EC2 instance with K8 running
+  - make sure to have nothing in the Security Group, apart from maybe SSH in case we want to run tests from our PC
+- Get the `IP address` of that image, along with the NodePort we want the database to be contacted on
+- Then, open the Docker image of our API, and add the `IP address` in the connection string, in the file called `appsettings.json`
+![](images/k8_example_constring.png)
+- Then, upload that image to Docker Hub, and use that image to deploy an EC2 of the API
+- Then, once the API is deployed, get it's `IP address along with the NodePort` and add it to the Security Group of the database
+- After all this is done, the IP of the API should be able to contact the database and get back a response
+- `NOTE:` the order here matters a lot, we cannot make the API first and then make the database, it has to be database first `then` API
+### Step by step
+#### DB part
+- create an EC2 for the database, following the [guide above](#first-create-an-ec2-instance-that-can-handle-the-k8-and-api), and `ONLY ADD` SSH to the security group for now
+- install Docker, kubectl and minikube as described above
+- copy the .yml files to create the database
+  - use this command `scp -i /path/my-key-pair.pem /path/my-file.txt ec2-user@my-instance-public-dns-name:path/`
+  - after doing this, using the command `ls` should yeld this
+![](images/k8_example_files.png)
+- execute the .yml files, deployment followed by service file
+  - if all worked well, you should see this
+  - `insert image of k8 cluster`
+- this concludes the database part
+  - if you want to check, open `SQL Server Management Studio (SSMS)` and connect to the database using the EC2 `IP address along with the NodePort` specified in the .yml files `(31000)`
+#### API part
+- now, we edit the API file with the new IP
+  - find the `appsettings.json` file as [above](#overall-plan)
+  - replace localhost with the `EC2 IP address followed by the NodePort`
+    - should look something like `176.34.78.96,31000`
+    - `NOTICE:` there is a coma after the IPv4, that is needed, it is not a typo
+- after the API has been altered, [commit and push](#then-push-to-docker-hub) it to Docker Hub
+  - if anyone other than the owner of this README is using this, note that at this point you will need to alter the image for the API
+  - go into the api_deployment.yml file and change the image name from the one I have put down to the one you want to use
+  - you can do this in the EC2 instance by running `nano api_deployment.yml` or by editing it in your own PC and trasfering the file again
+    - if you transfer again it will override the file that is already there
+- now, start an EC2 instance with the same requirements as [above](#first-create-an-ec2-instance-that-can-handle-the-k8-and-api)
+- transfer the `api_deployment.yml` and `api_service.yml` files to the instance
+- [create](#then-follow-the-list-of-commands-below) the API service
+  - if it was done correctly, it will look like this
+  - `add image`
+#### Connecting the two
+- now that the API is running with the IP of the database, and the database is runnig and ready, we just need to give the API access to the database
+- we do this by adding the `IP address` of the API to the security group of the database
+- go to the EC2 instance of the database and open the security group
+  - assuming you gave the group no name, it will be auto generated and will look something like this
+![](images/k8_example_sg.png)
+- we now want to add the IP of the API EC2
+  - click on `Edit inbound rules` above
+  - click on `Add rule`
+  - a new row will appear, we want to edit that
+  - leave the type as `Custom TCP`
+  - add `31000` to the `Port range` column
+  - leave `Source` as `Custom`
+  - add the IP of the API EC2 to the box after the dropdown
+  - after you add the IP in there, it will give you a dropdown with the same IP followed by `/32`, that is good click on it
+  - now `Save rules`
+- if you followed all the steps, the security group should look like this
+![](images/k8_example_sg_final.png)
+# That's pretty much it! 
